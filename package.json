@@ -1,0 +1,36 @@
+{
+    "name": "Enum.js",
+    "version": "0.1.0",
+    "description": "Javascript enum object",
+    "main": "index.js",
+    "directories": {
+        "example": "example",
+        "test": "test"
+    },
+    "scripts": {
+        "test": "grunt test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://gobwas@github.com/gobwas/Enum.js.git"
+    },
+    "keywords": [
+        "javascript",
+        "enum",
+        "enumerate",
+        "type"
+    ],
+    "author": "Sergey Kamardin",
+    "license": "BSD",
+    "readmeFilename": "README.md",
+    "gitHead": "60b5208d975e2a53231a84a56b4a8dcbef3304b8",
+    "bugs": {
+        "url": "https://github.com/gobwas/Enum.js/issues"
+    },
+    "devDependencies": {
+        "grunt": "*",
+        "mocha": "*",
+        "chai": "*",
+        "grunt-cafe-mocha": "*"
+    }
+}
