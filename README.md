@@ -6,6 +6,12 @@ Simple Enumerable object in javascript.
 Usage
 -----
 
+##### Creating custom Enum
+
+Enum.extend function expect two parameters:
+ - first is a static properties aka Enum constants (and functions, if needed),
+ - second is a custom prototype methods.
+
 ```javascript
 
 var HTTPCodeEnum = Enum.extend({
