@@ -31,6 +31,11 @@
         "grunt": "*",
         "mocha": "*",
         "chai": "*",
-        "grunt-cafe-mocha": "*"
+        "grunt-cafe-mocha": "*",
+        "grunt-contrib-coffee": "*",
+        "grunt-contrib-jshint": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-clean": "*",
+        "grunt-contrib-copy" : "*"
     }
 }
