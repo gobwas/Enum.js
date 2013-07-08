@@ -16,7 +16,11 @@ var HTTPCodeEnum = Enum.extend({
     INTERNAL_ERROR:   "500"
 });
 
-// Simple usage:
+```
+
+##### Simple usage
+
+```javascript
 
 function ajaxCallback(data) {
     if (data.code == HTTPCodeEnum.OK) {
@@ -24,7 +28,11 @@ function ajaxCallback(data) {
     }
 }
 
-// Enum usage:
+```
+
+##### Enum usage:
+
+```javascript
 
 function ajaxCallback(data) {
 
