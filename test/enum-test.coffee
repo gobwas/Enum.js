@@ -10,37 +10,102 @@ keys =
   B: "b"
   C: false
 
+# ---------------------------
+# Tests suite for Enum module
+# ---------------------------
+
 suite "Enum.js", ->
+
+  # Setup
+  # -----
+
   setup ->
     HTTPEnum = Enum.extend
       OK:    200
       ERROR: 500
 
-  # Enum#make() method
-  suite "#make", ->
-    test "Created enum should be instance of HTTPEnum", ->
-      OK = HTTPEnum.make('OK');
-      assert.instanceOf OK, HTTPEnum
+  # Enum#constructor (new)
+  # ----------------------
 
-    test "Created enum should be instance of Enum", ->
-      OK = HTTPEnum.make('OK');
-      assert.instanceOf OK, Enum
+  suite "#prototype.constructor", ->
+
+    test "Should throw the EnumError", ->
+      error = null
+
+      try
+        result = new HTTPEnum 123
+      catch err
+        error = err
+
+      assert.isNotNull error
+      assert.instanceOf error, Error
+      assert.instanceOf error, EnumError
+
+    test "Should return instance of HTTPEnum", ->
+      result = new HTTPEnum(HTTPEnum.OK)
+
+      assert.ok result
+      assert.instanceOf result, HTTPEnum
+
+    test "Should return instance of Enum", ->
+      result = new HTTPEnum(HTTPEnum.OK)
+
+      assert.ok result
+      assert.instanceOf result, Enum
+
+  # Enum#make
+  # ---------
+
+  suite "#make", ->
+
+    test "Should return correct instance of HTTPEnum", ->
+      result = HTTPEnum.make "OK"
+      value = HTTPEnum.OK
+
+      assert.ok         result
+      assert.equal      result.value(), value
+      assert.instanceOf result, HTTPEnum
+
+
+  # Enum#keyOf
+  # ----------
 
   suite "#keyOf", ->
-    test "Should return property name if it have existing value", ->
-      assert.isTrue HTTPEnum.keyOf(HTTPEnum.OK) == "OK"
 
-    test "Should return null if doesn't have value", ->
-      assert.isNull HTTPEnum.keyOf(123)
+    test "Should return property name if it exists", ->
+      result = HTTPEnum.keyOf(HTTPEnum.OK);
+
+      assert.isString result
+      assert.isTrue result == "OK"
+
+
+    test "Should return null if property doesn't exist", ->
+      result = HTTPEnum.keyOf(123);
+
+      assert.isNull result
+
+  # Enum#has
+  # --------
 
   suite "#has", ->
-    test "Should return true if have existing value", ->
-      assert.isTrue HTTPEnum.has HTTPEnum.OK
+
+    test "Should return true if property exists", ->
+      result = HTTPEnum.has HTTPEnum.OK
+
+      assert.isBoolean result
+      assert.isTrue result
 
     test "Should return false if doesn't have existing value", ->
-      assert.isFalse HTTPEnum.has(123)
+      result = HTTPEnum.has(123)
+
+      assert.isBoolean result
+      assert.isFalse result
+
+  # Enum#values
+  # -----------
 
   suite "#values", ->
+
     test "Should return correct list of values", ->
       keysWrong =
         A: 0
@@ -48,10 +113,17 @@ suite "Enum.js", ->
 
       MyEnum = Enum.extend keys
 
-      assert.deepEqual MyEnum.values(), keys
-      assert.notDeepEqual MyEnum.values(), keysWrong
+      result = MyEnum.values()
+
+      assert.isObject     result
+      assert.deepEqual    result, keys
+      assert.notDeepEqual result, keysWrong
+
+  # Enum#extend
+  # -----------
 
   suite "#extend", ->
+
     test "Should return instance of Enum", ->
       TestEnum = Enum.extend(keys)
 

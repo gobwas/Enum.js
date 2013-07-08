@@ -23,44 +23,82 @@
         ERROR: 500
       });
     });
-    suite("#make", function() {
-      test("Created enum should be instance of HTTPEnum", function() {
-        var OK;
-        OK = HTTPEnum.make('OK');
-        return assert.instanceOf(OK, HTTPEnum);
+    suite("#prototype.constructor", function() {
+      test("Should throw the EnumError", function() {
+        var err, error, result;
+        error = null;
+        try {
+          result = new HTTPEnum(123);
+        } catch (_error) {
+          err = _error;
+          error = err;
+        }
+        assert.isNotNull(error);
+        assert.instanceOf(error, Error);
+        return assert.instanceOf(error, EnumError);
       });
-      return test("Created enum should be instance of Enum", function() {
-        var OK;
-        OK = HTTPEnum.make('OK');
-        return assert.instanceOf(OK, Enum);
+      test("Should return instance of HTTPEnum", function() {
+        var result;
+        result = new HTTPEnum(HTTPEnum.OK);
+        assert.ok(result);
+        return assert.instanceOf(result, HTTPEnum);
+      });
+      return test("Should return instance of Enum", function() {
+        var result;
+        result = new HTTPEnum(HTTPEnum.OK);
+        assert.ok(result);
+        return assert.instanceOf(result, Enum);
+      });
+    });
+    suite("#make", function() {
+      return test("Should return correct instance of HTTPEnum", function() {
+        var result, value;
+        result = HTTPEnum.make("OK");
+        value = HTTPEnum.OK;
+        assert.ok(result);
+        assert.equal(result.value(), value);
+        return assert.instanceOf(result, HTTPEnum);
       });
     });
     suite("#keyOf", function() {
-      test("Should return property name if it have existing value", function() {
-        return assert.isTrue(HTTPEnum.keyOf(HTTPEnum.OK) === "OK");
+      test("Should return property name if it exists", function() {
+        var result;
+        result = HTTPEnum.keyOf(HTTPEnum.OK);
+        assert.isString(result);
+        return assert.isTrue(result === "OK");
       });
-      return test("Should return null if doesn't have value", function() {
-        return assert.isNull(HTTPEnum.keyOf(123));
+      return test("Should return null if property doesn't exist", function() {
+        var result;
+        result = HTTPEnum.keyOf(123);
+        return assert.isNull(result);
       });
     });
     suite("#has", function() {
-      test("Should return true if have existing value", function() {
-        return assert.isTrue(HTTPEnum.has(HTTPEnum.OK));
+      test("Should return true if property exists", function() {
+        var result;
+        result = HTTPEnum.has(HTTPEnum.OK);
+        assert.isBoolean(result);
+        return assert.isTrue(result);
       });
       return test("Should return false if doesn't have existing value", function() {
-        return assert.isFalse(HTTPEnum.has(123));
+        var result;
+        result = HTTPEnum.has(123);
+        assert.isBoolean(result);
+        return assert.isFalse(result);
       });
     });
     suite("#values", function() {
       return test("Should return correct list of values", function() {
-        var MyEnum, keysWrong;
+        var MyEnum, keysWrong, result;
         keysWrong = {
           A: 0,
           B: "c"
         };
         MyEnum = Enum.extend(keys);
-        assert.deepEqual(MyEnum.values(), keys);
-        return assert.notDeepEqual(MyEnum.values(), keysWrong);
+        result = MyEnum.values();
+        assert.isObject(result);
+        assert.deepEqual(result, keys);
+        return assert.notDeepEqual(result, keysWrong);
       });
     });
     return suite("#extend", function() {
