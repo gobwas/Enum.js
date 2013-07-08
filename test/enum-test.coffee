@@ -76,7 +76,7 @@ suite "Enum.js", ->
       result = HTTPEnum.keyOf(HTTPEnum.OK);
 
       assert.isString result
-      assert.isTrue result == "OK"
+      assert.equal    result, "OK"
 
 
     test "Should return null if property doesn't exist", ->

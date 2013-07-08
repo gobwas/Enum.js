@@ -1,5 +1,5 @@
 /**
- * <%= pkg.title %> - <%= pkg.description %>.
+ * <%= pkg.name %> - <%= pkg.description %>.
  *
  * Version: <%= pkg.version %>
  *
@@ -12,3 +12,4 @@
  * Location: Moscow, Russia.
  * Contact: gobwas@gmail.com
  */
+

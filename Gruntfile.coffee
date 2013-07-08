@@ -5,6 +5,8 @@ module.exports = (grunt) ->
     clean:
       tests:
         src : "test/**/*.js"
+      main:
+        src: "./*.js"
 
     cafemocha:
       src: 'test/**/*.js'
@@ -29,7 +31,6 @@ module.exports = (grunt) ->
 
     concat:
       options:
-        separator: "\n\n\n"
         banner: grunt.file.read "build/banner.txt"
       dist:
         src: "src/enum.js"
@@ -40,13 +41,14 @@ module.exports = (grunt) ->
         banner: grunt.file.read "build/banner.min.txt"
       build:
         src: "src/enum.js"
-        dest: "./<%= pkg.name.replace('-','.') %>.min.js"
+        dest: "./enum.min.js"
 
     copy:
-      files: [
-        src: ['path/*.js']
-        dest: '../gh-pages/release/<%= pkg.version %>/'
-      ]
+      main:
+        files: [
+          src: ['./*.js']
+          dest: '../gh-pages/release/<%= pkg.version %>/'
+        ]
 
 
   grunt.loadNpmTasks "grunt-cafe-mocha"
@@ -55,10 +57,11 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-copy"
+  grunt.loadNpmTasks "grunt-contrib-concat"
 
   grunt.registerTask "precopy", ->
     pkg = grunt.config "pkg"
-    dir = (grunt.config "copy").files[0].dest
+    dir = (grunt.config "copy").main.files[0].dest
 
     if !grunt.file.isDir(dir)
       grunt.file.mkdir(dir)
@@ -67,4 +70,4 @@ module.exports = (grunt) ->
       grunt.log.ok "Directory already exists: " + dir
 
   grunt.registerTask "test", ["coffee:tests", "cafemocha", "clean:tests", "jshint"]
-  grunt.registerTask "build", ["test", "uglify", "precopy", "copy"]
+  grunt.registerTask "build", ["test", "clean:main", "concat", "uglify", "precopy", "copy"]
