@@ -3,3 +3,5 @@ node_modules
 npm-debug.log
 Gruntfile.js
 Gruntfile.map
+test/**/*.js
+test/**/*.map
