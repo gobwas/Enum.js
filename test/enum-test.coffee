@@ -1,6 +1,5 @@
 assert    = require('chai').assert
 Enum      = require('../src/enum.js').Enum
-EnumError = require('../src/enum.js').EnumError
 
 # Test object
 HTTPEnum = null
@@ -29,7 +28,7 @@ suite "Enum.js", ->
 
   suite "#prototype.constructor", ->
 
-    test "Should throw the EnumError", ->
+    test "Should throw the right Error", ->
       error = null
 
       try
@@ -38,8 +37,7 @@ suite "Enum.js", ->
         error = err
 
       assert.isNotNull error
-      assert.instanceOf error, Error
-      assert.instanceOf error, EnumError
+      assert.instanceOf error, HTTPEnum.__error
 
     test "Should return instance of HTTPEnum", ->
       result = new HTTPEnum(HTTPEnum.OK)
@@ -66,6 +64,14 @@ suite "Enum.js", ->
       assert.equal      result.value(), value
       assert.instanceOf result, HTTPEnum
 
+    test "Should throw a correct Error if key does not present", ->
+      try
+        result = HTTPEnum.make "HELLOOUU"
+      catch err
+        error = err
+
+      assert.isNotNull error
+      assert.instanceOf error, Enum.__error
 
   # Enum#keyOf
   # ----------
@@ -130,12 +136,6 @@ suite "Enum.js", ->
       obj = new TestEnum 1
 
       assert.instanceOf obj, Enum
-
-    test "Should return instance of TestEnum", ->
-      TestEnum = Enum.extend(keys)
-
-      obj = new TestEnum 1
-
       assert.instanceOf obj, TestEnum
 
     test "Should save deep inheritance", ->
@@ -169,3 +169,21 @@ suite "Enum.js", ->
 
       assert.isFunction TestEnum.callMe
       assert.isTrue TestEnum.callMe()
+
+    test "Should throw given __error", ->
+      class MyOwnError extends Error
+        constructor: (message) ->
+          err = new Error message
+
+          @message = err.message
+          @stack   = err.stack
+
+      TestEnum = Enum.extend __error: MyOwnError
+
+      try
+        result = new TestEnum 123
+      catch err
+        error = err
+
+      assert.isNotNull error
+      assert.instanceOf error, MyOwnError

@@ -2,7 +2,7 @@
  * Enum.js - Javascript enum object.
  *
  * Version: 0.1.0
- * Date: 2013-07-08 14:37:37
+ * Date: 2013-07-09 18:11:31
  *
  * Copyright 2013, Sergey Kamardin.
  *
@@ -84,9 +84,16 @@
         return to;
     };
 
-    var indexOf = function(val, obj) {
+    /**
+     * Finds property name for given value in given object.
+     *
+     * @param {*} needle
+     * @param {object} obj
+     * @returns {string|number|undefined}
+     */
+    var indexOf = function(needle, obj) {
         return each(obj, function(value, key) {
-            if (value === val) {
+            if (value === needle) {
                 return key;
             }
 
@@ -94,18 +101,30 @@
         });
     };
 
-    var hasEnumKey = function(needle, object) {
-        return typeof object[needle] !== 'function' && typeof object[needle] !== 'object' && needle.substr(0,2) !== '__';
-    };
+    /**
+     * Checks if given pair key-value is correct Enum constant.
+     *
+     * @param needle
+     * @param object
+     * @returns {boolean}
+     */
+    var hasEnumKey = (function() {
+        return function(needle, object) {
+            return typeof object[needle] !== 'function' && typeof object[needle] !== 'object' && needle.substr(0,2) !== '__';
+        };
+    })();
+
 
     // Package exception
     // -----------------
 
     var EnumError = function EnumError(msg) {
-        Error.prototype.constructor.apply(this, arguments);
+        var error =  Error.apply(null, arguments);
 
-        // don't know reasons why upper line doesn't apply this:
-        this.message = msg;
+        this.__error = error;
+
+        this.message = error.message;
+        this.stack   = error.stack;
     };
 
     var EError = function(){};
@@ -119,16 +138,21 @@
     });
 
 
-
     // Enum base class
     // ---------------
 
+    /**
+     * Constructor.
+     *
+     * @param val
+     * @constructor
+     */
     var Enum = function Enum(val) {
         var value = null,
             key = indexOf(val, this.constructor.values());
 
         if (key === undefined) {
-            throw new EnumError("'" + this.name + "' does not have value '" + val + "'");
+            throw new EnumError("'" + this.name + "' does not have the value '" + val + "'");
         }
 
         value = val;
@@ -330,7 +354,15 @@
             }
 
             return child;
-        }
+        },
+
+        /**
+         * Reference to custom Error constructor.
+         * Default value is EnumError.
+         *
+         * @type {Error}
+         */
+        __error: EnumError
     };
 
     // Apply all static methods to class.

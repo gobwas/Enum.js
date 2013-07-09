@@ -53,9 +53,16 @@
         return to;
     };
 
-    var indexOf = function(val, obj) {
+    /**
+     * Finds property name for given value in given object.
+     *
+     * @param {*} needle
+     * @param {object} obj
+     * @returns {string|number|undefined}
+     */
+    var indexOf = function(needle, obj) {
         return each(obj, function(value, key) {
-            if (value === val) {
+            if (value === needle) {
                 return key;
             }
 
@@ -63,41 +70,99 @@
         });
     };
 
+    /**
+     * Checks if given pair key-value is correct Enum constant.
+     *
+     * @param needle
+     * @param object
+     * @returns {boolean}
+     */
     var hasEnumKey = function(needle, object) {
-        return typeof object[needle] !== 'function' && typeof object[needle] !== 'object' && needle.substr(0,2) !== '__';
+        return object.hasOwnProperty(needle) &&
+            typeof object[needle] !== 'function' &&
+            typeof object[needle] !== 'object' &&
+            needle.substr(0,2) !== '__';
     };
+
+
+
+    /**
+     * Inheritance function.
+     *
+     * @param {function} Parent
+     * @param {object} [protoProps]
+     * @param {object} [staticProps]
+     *
+     * @returns {function}
+     */
+    var inherit = function(Parent, protoProps, staticProps) {
+        var Child;
+
+        protoProps || (protoProps = {});
+        staticProps || (staticProps = {});
+
+        if (protoProps.hasOwnProperty("constructor") && typeof protoProps.constructor === 'function') {
+            Child = protoProps.constructor;
+        } else {
+            Child = function Child(){Parent.apply(this, arguments);};
+        }
+
+        // set the static props to the new Enum
+        extend(Child, Parent, staticProps);
+
+        // create prototype of Child, that created with Parent prototype
+        // (without making Child.prototype = new Parent())
+        //
+        // __proto__  <----  __proto__
+        //     ^                 ^
+        //     |                 |
+        //   Parent            Child
+        //
+        function Surrogate(){}
+        Surrogate.prototype = Parent.prototype;
+        Child.prototype = new Surrogate();
+
+        // extend prototype
+        extend(Child.prototype, protoProps, {constructor: Child});
+
+        // link to Parent prototype
+        Child.__super__ = Parent.prototype;
+
+        return Child;
+    };
+
 
     // Package exception
     // -----------------
 
-    var EnumError = function EnumError(msg) {
-        Error.prototype.constructor.apply(this, arguments);
+    var EnumError = inherit(Error, {
+        constructor: function EnumError() {
+            var error =  Error.apply(null, arguments);
 
-        // don't know reasons why upper line doesn't apply this:
-        this.message = msg;
-    };
+            this.__error = error;
 
-    var EError = function(){};
-    EError.prototype = Error.prototype;
-    EnumError.prototype = new EError();
-
-    extend(EnumError.prototype, {
-        constructor: EnumError,
+            this.message = error.message;
+            this.stack   = error.stack;
+        },
         name:        "EnumError",
         message:     ""
     });
 
-
-
     // Enum base class
     // ---------------
 
+    /**
+     * Constructor.
+     *
+     * @param val
+     * @constructor
+     */
     var Enum = function Enum(val) {
         var value = null,
             key = indexOf(val, this.constructor.values());
 
         if (key === undefined) {
-            throw new EnumError("'" + this.name + "' does not have value '" + val + "'");
+            throw new this.constructor.__error("'" + this.name + "' does not have the value '" + val + "'");
         }
 
         value = val;
@@ -122,7 +187,7 @@
 
         equalEnum: function(e) {
             if (!e instanceof Enum) {
-                throw new EnumError("Enum object is expected");
+                throw new this.constructor.__error("Enum object is expected");
             }
 
             return this.value() === e.value();
@@ -141,7 +206,9 @@
         }
     };
 
-    // Static methods:
+    // Static methods of Enum
+    // ----------------------
+
     var statics = {
         /**
          * Creates new Enum object by key.
@@ -158,18 +225,19 @@
         make: function(key) {
             if (hasEnumKey(key, this)) {
                 // old version was: return new this(this[key]);
-                // avoid code like: new this(this[key]);
+                // avoid code like: new this.prototype.constructor(this[key]);
                 // so need to emulate work of 'new' command:
-                var F = function(){};
-                F.prototype = this.prototype;
-                var obj = new F();
+                /*var Child = function Child(){};
+                Child.prototype = this.prototype;
+                var obj = new Child();
 
                 this.call(obj, this[key]);
 
-                return obj;
+                return obj;*/
+                return new this.prototype.constructor(this[key]);
             }
 
-            throw new EnumError("'" + this.name + "' does not have value for key '" + key + "'");
+            throw new this.__error("'" + this.prototype.name + "' does not have value for key '" + key + "'");
         },
 
         /**
@@ -260,47 +328,29 @@
          * @returns {*}
          */
         extend: function(staticProps, prototypeProps) {
-            var parent = this,
-                child;
-
-            staticProps || (staticProps = {});
             prototypeProps || (prototypeProps = {});
 
-            if (prototypeProps.hasOwnProperty("constructor") && typeof prototypeProps.constructor === 'function') {
-                child = prototypeProps.constructor;
-            } else {
-                child = function child(){parent.apply(this, arguments);};
-            }
-
-            // set the static props to the new Enum
-            extend(child, parent, staticProps);
-
-            // create prototype of child, that created with parent prototype
-            // (without making child.prototype = new parent())
-            //
-            // __proto__  <----  __proto__
-            //     ^                 ^
-            //     |                 |
-            //    base             child
-            //
-            function Surrogate(){}
-            Surrogate.prototype = parent.prototype;
-            child.prototype = new Surrogate();
-
-            // extend prototype
-            extend(child.prototype, prototypeProps, {constructor: child});
-
-            // link to parent prototype
-            child.__super__ = parent.prototype;
+            // Resulted constructor
+            var Child = inherit(this, prototypeProps, staticProps);
 
             // freeze enum if it possible
             if (typeof Object.freeze === 'function') {
-                Object.freeze(child);
+                Object.freeze(Child);
             }
 
-            return child;
-        }
+            return Child;
+        },
+
+        /**
+         * Reference to custom Error constructor.
+         * Default value is EnumError.
+         *
+         * @type {Error}
+         */
+        __error: EnumError
     };
+
+
 
     // Apply all static methods to class.
     extend(Enum, statics);
