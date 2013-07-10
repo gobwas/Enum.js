@@ -41,8 +41,8 @@ var HTTPCodeEnum = Enum.extend({
 
 ```
 
-> If ```__error``` does not present in first parameter object, then Enum uses its own EnumError constructor.
-> Anyway, u can always get the reference to Error function via ```Enum.__error```
+> If ```__error``` does not present in first parameter object, then Enum will use its own EnumError constructor.
+> Anyway, u can always get the reference to the Error function via ```Enum.__error```
 
 
 ##### Simple usage
