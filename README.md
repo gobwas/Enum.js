@@ -9,7 +9,7 @@ Usage
 ##### Creating custom Enum
 
 Enum.extend function expect two parameters:
- - first is a static properties aka Enum constants (and functions, if needed),
+ - first is a static properties aka Enum constants,
  - second is a custom prototype methods.
 
 ```javascript
@@ -23,6 +23,27 @@ var HTTPCodeEnum = Enum.extend({
 });
 
 ```
+
+You can also pass in first object:
+ - static functions, that will can be accessed like ```MyEnum.myFunction()```
+ - static objects,
+ - static values, needed for internal usage. To prevent parsing them as Enum constant, add double underscore as prefix, like: ```__myInternalValue```
+
+Enum throws error in some usual cases. So there is an ability to use custom Errors for your custom Enums, to catch them upper and check with ```instanceOf``` function:
+
+```javascript
+
+var HTTPCodeEnum = Enum.extend({
+    ... // constants
+
+    __error: MyOwnError // reference to your Error constructor
+});
+
+```
+
+> If ```__error``` does not present in first parameter object, then Enum uses its own EnumError constructor.
+> Anyway, u can always get the reference to Error function via ```Enum.__error```
+
 
 ##### Simple usage
 
@@ -56,7 +77,7 @@ function indexController() {
     try {
         var request = $.ajax(...).done(ajaxCallback);
     } catch(e) {
-        if (e instanceof EnumError) {
+        if (e instanceof HTTPCodeEnum.__error) {
             console.log('Catched non existing HTTP code!', e.message);
         }
     }

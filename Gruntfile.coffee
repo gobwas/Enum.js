@@ -97,4 +97,4 @@ module.exports = (grunt) ->
         done()
 
   grunt.registerTask "test", ["coffee:tests", "cafemocha", "clean:tests", "jshint"]
-  grunt.registerTask "build", ["cmd:git-commit", "test", "clean:main", "concat", "uglify", "precopy", "copy"]
+  grunt.registerTask "build", ["test", "clean:main", "concat", "uglify", "precopy", "copy"]
