@@ -1,7 +1,10 @@
 /**
  * <%= pkg.name %> - <%= pkg.description %>.
  *
+ * <%= pkg.repository.url %>
+ *
  * Version: <%= pkg.version %>
+ * Commit: <%= git.commit %>
  * Date: <%= grunt.template.today("yyyy-mm-dd HH:MM:ss") %>
  *
  * Copyright <%= grunt.template.today("yyyy") %>, Sergey Kamardin.

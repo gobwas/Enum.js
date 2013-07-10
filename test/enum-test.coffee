@@ -187,3 +187,16 @@ suite "Enum.js", ->
 
       assert.isNotNull error
       assert.instanceOf error, MyOwnError
+
+    test "Should throw error with message, that contains Enum name", ->
+      TestEnum = Enum.extend {}, name: "testEnum"
+
+      try
+        result = new TestEnum 123
+      catch err
+        error = err
+
+      regexp = new RegExp('^.*' + TestEnum.prototype.name + '.*$', 'i')
+
+      assert.isNotNull error
+      assert.isTrue regexp.test error.message

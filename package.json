@@ -1,6 +1,6 @@
 {
     "name": "Enum.js",
-    "version": "0.1.1-dev",
+    "version": "0.1.1",
     "description": "Javascript enum object",
     "main": "index.js",
     "directories": {
@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://gobwas@github.com/gobwas/Enum.js.git"
+        "url": "https://github.com/gobwas/Enum.js.git"
     },
     "keywords": [
         "javascript",

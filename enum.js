@@ -1,8 +1,11 @@
 /**
  * Enum.js - Javascript enum object.
  *
- * Version: 0.1.1-dev
- * Date: 2013-07-09 19:32:21
+ * https://github.com/gobwas/Enum.js.git
+ *
+ * Version: 0.1.1
+ * Commit: "50b0b24cdc235925bd6900e512ceb1bdb9b4fbf8"
+ * Date: 2013-07-10 11:24:57
  *
  * Copyright 2013, Sergey Kamardin.
  *

@@ -50,6 +50,12 @@ module.exports = (grunt) ->
           dest: '../gh-pages/release/<%= pkg.version %>/'
         ]
 
+    cmd:
+      "git-commit":
+        cmd: "git"
+        args: ['log', '-1', '--format="%H"']
+        set: "git.commit"
+
 
   grunt.loadNpmTasks "grunt-cafe-mocha"
   grunt.loadNpmTasks "grunt-contrib-jshint"
@@ -69,5 +75,26 @@ module.exports = (grunt) ->
     else
       grunt.log.ok "Directory already exists: " + dir
 
+
+  grunt.registerMultiTask "cmd", ->
+    done = @async()
+    set = @data.set
+
+    grunt.util.spawn
+      cmd: @data.cmd
+      args: @data.args
+    ,
+    (error, result, code) ->
+      if (error)
+        done(false)
+        grunt.fail.warn(error)
+      else
+        result = String result
+
+        grunt.config(set, result);
+        grunt.log.ok result
+
+        done()
+
   grunt.registerTask "test", ["coffee:tests", "cafemocha", "clean:tests", "jshint"]
-  grunt.registerTask "build", ["test", "clean:main", "concat", "uglify", "precopy", "copy"]
+  grunt.registerTask "build", ["cmd:git-commit", "test", "clean:main", "concat", "uglify", "precopy", "copy"]

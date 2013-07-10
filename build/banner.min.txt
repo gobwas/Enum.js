@@ -1,15 +1,7 @@
 /**
- * <%= pkg.name %> - <%= pkg.description %>.
- *
- * Version: <%= pkg.version %>
- *
+ * <%= pkg.name %> <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd HH:MM:ss") %>) - <%= pkg.description %>.
+ * <%= pkg.repository.url %>
  * Copyright <%= grunt.template.today("yyyy") %>, Sergey Kamardin.
- *
- * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- *
- * Date: <%= grunt.template.today("yyyy-mm-dd HH:MM:ss") %>
- * Location: Moscow, Russia.
  * Contact: gobwas@gmail.com
  */
 
