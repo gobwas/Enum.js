@@ -248,26 +248,13 @@
          * @returns {boolean}
          */
         has: function(needle) {
-            return !!this.keyOf(needle);
-        },
-
-        /**
-         * Trying to find a key of needle.
-         *
-         * @param {*} needle
-         *
-         * @returns {*}
-         */
-        keyOf: function(needle) {
-            var prop = each(this.values(), function(val, prop) {
+            return undefined !== each(this.values(), function(val, prop) {
                 if (needle === val) {
                     return prop;
                 }
 
                 return undefined;
             });
-
-            return prop ? prop : null;
         },
 
         /**

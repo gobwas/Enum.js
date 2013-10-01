@@ -3,9 +3,8 @@
  *
  * https://github.com/gobwas/Enum.js.git
  *
- * Version: 0.1.1
- * Commit: "648b59b6824040c89ae61bbbc3b274d24d45ebd1"
- * Date: 2013-07-10 11:26:35
+ * Version: 0.1.2
+ * Date: 2013-10-01 13:42:34
  *
  * Copyright 2013, Sergey Kamardin.
  *
@@ -282,26 +281,13 @@
          * @returns {boolean}
          */
         has: function(needle) {
-            return !!this.keyOf(needle);
-        },
-
-        /**
-         * Trying to find a key of needle.
-         *
-         * @param {*} needle
-         *
-         * @returns {*}
-         */
-        keyOf: function(needle) {
-            var prop = each(this.values(), function(val, prop) {
+            return undefined !== each(this.values(), function(val, prop) {
                 if (needle === val) {
                     return prop;
                 }
 
                 return undefined;
             });
-
-            return prop ? prop : null;
         },
 
         /**

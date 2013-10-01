@@ -73,23 +73,6 @@ suite "Enum.js", ->
       assert.isNotNull error
       assert.instanceOf error, Enum.__error
 
-  # Enum#keyOf
-  # ----------
-
-  suite "#keyOf", ->
-
-    test "Should return property name if it exists", ->
-      result = HTTPEnum.keyOf(HTTPEnum.OK);
-
-      assert.isString result
-      assert.equal    result, "OK"
-
-
-    test "Should return null if property doesn't exist", ->
-      result = HTTPEnum.keyOf(123);
-
-      assert.isNull result
-
   # Enum#has
   # --------
 
