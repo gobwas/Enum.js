@@ -162,7 +162,7 @@
             key = indexOf(val, this.constructor.values());
 
         if (key === undefined) {
-            throw new this.constructor.__error("'" + this.name + "' does not have the value '" + val + "'");
+            throw new this.constructor.Error("'" + this.name + "' does not have the value '" + val + "'");
         }
 
         value = val;
@@ -187,7 +187,7 @@
 
         equalEnum: function(e) {
             if (!e instanceof Enum) {
-                throw new this.constructor.__error("Enum object is expected");
+                throw new this.constructor.Error("Enum object is expected");
             }
 
             return this.value() === e.value();
@@ -237,7 +237,7 @@
                 return new this.prototype.constructor(this[key]);
             }
 
-            throw new this.__error("'" + this.prototype.name + "' does not have value for key '" + key + "'");
+            throw new this.Error("'" + this.prototype.name + "' does not have value for key '" + key + "'");
         },
 
         /**
@@ -334,7 +334,7 @@
          *
          * @type {Error}
          */
-        __error: EnumError
+        Error: EnumError
     };
 
 
@@ -342,14 +342,20 @@
     // Apply all static methods to class.
     extend(Enum, statics);
 
-    // AMD Functionality or global object
-    // ----------------------------------
+    // register module
+    var isAMD, isCJS;
 
-    //if (typeof define === 'function') {
-    //	define([], function() {return Enum});
-    //} else {
-    global.Enum = Enum;
-    global.EnumError = EnumError;
-    //}
+    isAMD = typeof define === "function" && define.amd;
+    isCJS = typeof module === "object"   && module.exports;
+
+    if (isAMD) {
+        define([], function() {
+            return Enum;
+        });
+    } else if (isCJS) {
+        module.exports = Enum;
+    } else {
+        global.Enum = Enum;
+    }
 
 })(this);

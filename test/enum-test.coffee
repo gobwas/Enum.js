@@ -1,5 +1,5 @@
 assert    = require('chai').assert
-Enum      = require('../src/enum.js').Enum
+Enum      = require('../src/enum.js');
 
 # Test object
 HTTPEnum = null
@@ -37,7 +37,7 @@ suite "Enum.js", ->
         error = err
 
       assert.isNotNull error
-      assert.instanceOf error, HTTPEnum.__error
+      assert.instanceOf error, HTTPEnum.Error
 
     test "Should return instance of HTTPEnum", ->
       result = new HTTPEnum(HTTPEnum.OK)
@@ -71,7 +71,7 @@ suite "Enum.js", ->
         error = err
 
       assert.isNotNull error
-      assert.instanceOf error, Enum.__error
+      assert.instanceOf error, Enum.Error
 
   # Enum#has
   # --------
@@ -153,7 +153,7 @@ suite "Enum.js", ->
       assert.isFunction TestEnum.callMe
       assert.isTrue TestEnum.callMe()
 
-    test "Should throw given __error", ->
+    test "Should throw given Error", ->
       class MyOwnError extends Error
         constructor: (message) ->
           err = new Error message
@@ -161,7 +161,7 @@ suite "Enum.js", ->
           @message = err.message
           @stack   = err.stack
 
-      TestEnum = Enum.extend __error: MyOwnError
+      TestEnum = Enum.extend Error: MyOwnError
 
       try
         result = new TestEnum 123

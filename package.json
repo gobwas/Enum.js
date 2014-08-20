@@ -1,8 +1,8 @@
 {
-    "name": "Enum.js",
-    "version": "0.1.3-dev",
+    "name": "enum-js",
+    "version": "0.1.4",
     "description": "Javascript enum object",
-    "main": "index.js",
+    "main": "./enum.js",
     "directories": {
         "example": "example",
         "test": "test"
@@ -21,9 +21,8 @@
         "type"
     ],
     "author": "Sergey Kamardin",
-    "license": "BSD",
+    "license": "MIT",
     "readmeFilename": "README.md",
-    "gitHead": "60b5208d975e2a53231a84a56b4a8dcbef3304b8",
     "bugs": {
         "url": "https://github.com/gobwas/Enum.js/issues"
     },

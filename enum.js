@@ -1,12 +1,12 @@
 /**
- * Enum.js - Javascript enum object.
+ * enum-js - Javascript enum object.
  *
  * https://github.com/gobwas/Enum.js.git
  *
- * Version: 0.1.2
- * Date: 2013-10-01 13:42:34
+ * Version: 0.1.4
+ * Date: 2014-08-20 17:01:56
  *
- * Copyright 2013, Sergey Kamardin.
+ * Copyright 2014, Sergey Kamardin.
  *
  * Licensed under the MIT license.
  * http://www.opensource.org/licenses/mit-license.php
@@ -195,7 +195,7 @@
             key = indexOf(val, this.constructor.values());
 
         if (key === undefined) {
-            throw new this.constructor.__error("'" + this.name + "' does not have the value '" + val + "'");
+            throw new this.constructor.Error("'" + this.name + "' does not have the value '" + val + "'");
         }
 
         value = val;
@@ -220,7 +220,7 @@
 
         equalEnum: function(e) {
             if (!e instanceof Enum) {
-                throw new this.constructor.__error("Enum object is expected");
+                throw new this.constructor.Error("Enum object is expected");
             }
 
             return this.value() === e.value();
@@ -270,7 +270,7 @@
                 return new this.prototype.constructor(this[key]);
             }
 
-            throw new this.__error("'" + this.prototype.name + "' does not have value for key '" + key + "'");
+            throw new this.Error("'" + this.prototype.name + "' does not have value for key '" + key + "'");
         },
 
         /**
@@ -367,7 +367,7 @@
          *
          * @type {Error}
          */
-        __error: EnumError
+        Error: EnumError
     };
 
 
@@ -375,14 +375,20 @@
     // Apply all static methods to class.
     extend(Enum, statics);
 
-    // AMD Functionality or global object
-    // ----------------------------------
+    // register module
+    var isAMD, isCJS;
 
-    //if (typeof define === 'function') {
-    //	define([], function() {return Enum});
-    //} else {
-    global.Enum = Enum;
-    global.EnumError = EnumError;
-    //}
+    isAMD = typeof define === "function" && define.amd;
+    isCJS = typeof module === "object"   && module.exports;
+
+    if (isAMD) {
+        define([], function() {
+            return Enum;
+        });
+    } else if (isCJS) {
+        module.exports = Enum;
+    } else {
+        global.Enum = Enum;
+    }
 
 })(this);

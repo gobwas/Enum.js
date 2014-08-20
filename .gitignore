@@ -5,3 +5,4 @@ Gruntfile.js
 Gruntfile.map
 test/**/*.js
 test/**/*.map
+*.iml
